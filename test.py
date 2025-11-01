@@ -153,24 +153,22 @@ elif page == "Socioeconomic & Lifestyle Factors":
     st.plotly_chart(fig4, use_container_width=True)
 
      # --- 5️⃣ Violin Plot – GPA Distribution by Gaming Hours ---
-    fig5 = px.violin(
-        df,
-        x='Gaming',
-        y='Overall',
-        box=True,
-        points='all',
-        color='Gaming',
-        title="GPA Distribution by Gaming Hours",
-        color_discrete_sequence=px.colors.sequential.Blues
-    )
-    fig5.update_layout(
-        plot_bgcolor='white',
-        xaxis_title="Gaming Hours (per day)",
-        yaxis_title="GPA",
-        font=dict(size=14),
-        showlegend=False
-    )
-    st.plotly_chart(fig5, use_container_width=True)
+fig5 = px.violin(
+    df,
+    x='Gaming',
+    y='Overall',
+    box=True,
+    points='all',
+    title="GPA Distribution by Gaming Hours"
+)
+fig5.update_layout(
+    plot_bgcolor='white',
+    xaxis_title="Gaming Hours (per day)",
+    yaxis_title="GPA",
+    font=dict(size=14)
+)
+st.plotly_chart(fig5, use_container_width=True)
+
 
 
     # 6️⃣ Heatmap – Correlation Matrix
