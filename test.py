@@ -101,27 +101,25 @@ elif page == "Academic Performance Trends":
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # --- 3️⃣ Bar Chart – Average GPA by Attendance ---
-    fig3 = px.bar(
-        df.groupby('Attendance')['Overall'].mean().reset_index(),
-        x='Attendance',
-        y='Overall',
+    # --- 3️⃣ Pie Chart – Average GPA by Attendance ---
+    avg_attendance = df.groupby('Attendance')['Overall'].mean().reset_index()
+    fig3 = px.pie(
+        avg_attendance,
+        values='Overall',
+        names='Attendance',
         title="Average GPA by Attendance Level",
-        text_auto=True
+        color_discrete_sequence=px.colors.sequential.RdBu
     )
-    fig3.update_layout(
-        xaxis_title="Attendance Level",
-        yaxis_title="Average GPA"
-    )
+    fig3.update_traces(textinfo='percent+label', pull=[0.05]*len(avg_attendance))
     st.plotly_chart(fig3, use_container_width=True)
 
     st.markdown("""
     **Interpretation:**  
-    - Departments show varied GPA levels, indicating different grading or performance patterns.  
-    - The histogram shows a balanced GPA distribution between genders, with only minor variation.  
-    - Attendance remains the strongest and most consistent factor influencing GPA outcomes.
+    - The boxplot shows that some departments have more consistent GPA ranges.  
+    - The histogram reveals minimal GPA difference between genders.  
+    - The **pie chart** clearly shows that students with **higher attendance** contribute most to strong GPA averages, 
+      emphasizing the importance of consistent class participation.
     """)
-
 
 # --------------------------------------------
 # Objective 2: Socioeconomic & Lifestyle Factors
