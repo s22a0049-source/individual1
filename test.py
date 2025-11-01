@@ -176,7 +176,7 @@ elif page == "Skills & Extracurricular Impact":
     Students active in extracurriculars maintain balanced academic performance.
     """)
 
-    # 7️⃣ Density Contour Plot – Computer Skill vs GPA
+    # 7️⃣ Density Plot – Computer Skill vs GPA
     import plotly.express as px
 
     # Clean data to ensure numeric columns only
@@ -189,7 +189,7 @@ elif page == "Skills & Extracurricular Impact":
         df_density,
         x='Computer',
         y='Overall',
-        title="Density Contour of Computer Skill vs GPA"
+        title="Density Plot of Computer Skill vs GPA"
     )
 
     # Fill the contour for better readability
