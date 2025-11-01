@@ -1,151 +1,165 @@
+# ============================================================
+# 📊 Student Survey Visualization Dashboard
+# ============================================================
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Try importing seaborn safely
-try:
-    import seaborn as sns
-    seaborn_available = True
-except ImportError:
-    seaborn_available = False
-    st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
+# -----------------------------
+# Streamlit Page Setup
+# -----------------------------
+st.set_page_config(page_title="Student Survey Dashboard", layout="wide")
 
-st.title("Student Academic Visualization Dashboard")
-
-st.markdown("""
-Explore the student dataset through **scientific visualization techniques**.
-Each section focuses on one objective to uncover meaningful academic insights.
-""")
-
-# Load dataset
+# -----------------------------
+# Load and Clean Dataset
+# -----------------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv("ResearchInformation3.csv")
+    df = pd.read_csv("ResearchInformation3_cleaned.csv")
+    df = df.dropna(axis=1, how='all')
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df = df.drop_duplicates()
+    return df
 
 df = load_data()
 
-# Sidebar navigation within visualization page
-st.sidebar.header("📄 Visualization Pages")
-page = st.sidebar.radio("Select Analysis Section", [
-    "Dataset Selection & Relevance",
-    "Academic Performance Trends",
-    "Socioeconomic & Lifestyle Factors",
-    "Skills & Extracurricular Impact"
-])
+# ============================================================
+# PAGE 1 – Academic Performance
+# ============================================================
+st.title("🎓 Objective 1: Analyze Academic Performance Patterns")
 
-# Helper function
-def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
-    fig, ax = plt.subplots(figsize=(8, 5))
-    if seaborn_available:
-        sns.set(style="whitegrid", palette="pastel")
-        if kind == "box":
-            sns.boxplot(x=x, y=y, data=data, ax=ax)
-        elif kind == "violin":
-            sns.violinplot(x=x, y=y, data=data, inner='quartile', ax=ax)
-        elif kind == "bar":
-            sns.barplot(x=x, y=y, data=data, ci=None, ax=ax)
-        elif kind == "scatter":
-            sns.scatterplot(x=x, y=y, hue=hue, data=data, s=80, ax=ax)
-        elif kind == "heatmap":
-            sns.heatmap(data, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
-        elif kind == "line":
-            sns.lineplot(x=x, y=y, data=data, marker='o', ci=None, ax=ax)
-    else:
-        if kind == "box":
-            data.boxplot(column=y, by=x, ax=ax)
-        elif kind == "bar":
-            data.groupby(x)[y].mean().plot(kind='bar', ax=ax)
-        elif kind == "scatter":
-            ax.scatter(data[x], data[y], alpha=0.6)
-        elif kind == "line":
-            data.groupby(x)[y].mean().plot(kind='line', marker='o', ax=ax)
-        elif kind == "heatmap":
-            cax = ax.matshow(data.corr(), cmap='coolwarm')
-            fig.colorbar(cax)
-    ax.set_title(title)
-    plt.xticks(rotation=45)
+st.markdown("""
+**Objective Statement:**  
+To explore how academic performance (GPA) varies across gender, age, and study habits among students.
+
+**Summary Box:**  
+This section visualizes GPA trends across demographic and behavioral factors.
+The patterns indicate how gender, study hours, and age group influence academic success.
+""")
+
+# Visualization 1: Average GPA by Gender
+st.subheader("1️⃣ Average GPA by Gender")
+fig, ax = plt.subplots(figsize=(6,4))
+sns.barplot(data=df, x='Gender', y='GPA', ax=ax, palette='Set2')
+ax.set_title("Average GPA by Gender")
+st.pyplot(fig)
+
+# Visualization 2: GPA vs Study Hours (Line Plot)
+st.subheader("2️⃣ GPA vs Study Hours")
+fig, ax = plt.subplots(figsize=(6,4))
+sns.lineplot(data=df, x='Study Hours', y='GPA', marker='o', ax=ax)
+ax.set_title("Relationship between Study Hours and GPA")
+st.pyplot(fig)
+
+# Visualization 3: GPA by Age Group (Box Plot)
+st.subheader("3️⃣ GPA Distribution by Age Group")
+fig, ax = plt.subplots(figsize=(6,4))
+sns.boxplot(data=df, x='Age Group', y='GPA', ax=ax, palette='coolwarm')
+ax.set_title("GPA Distribution by Age Group")
+st.pyplot(fig)
+
+st.markdown("""
+**Interpretation:**  
+The plots reveal that students studying longer hours and within certain age ranges tend to achieve higher GPAs. 
+Gender-based differences are minimal but observable.
+""")
+
+# ============================================================
+# PAGE 2 – Socioeconomic & Family Factors
+# ============================================================
+st.title("🏡 Objective 2: Examine Socioeconomic and Family Influences")
+
+st.markdown("""
+**Objective Statement:**  
+To identify how socioeconomic and family-related factors affect academic outcomes.
+
+**Summary Box:**  
+This section highlights relationships between parental education, income levels, and GPA.
+The analysis suggests that parental background may influence student achievement.
+""")
+
+# Visualization 4: Parental Education vs GPA (Box Plot)
+st.subheader("4️⃣ GPA Distribution by Parental Education")
+fig, ax = plt.subplots(figsize=(6,4))
+sns.boxplot(data=df, x='Parental Education', y='GPA', ax=ax)
+ax.set_title("GPA by Parental Education Level")
+st.pyplot(fig)
+
+# Visualization 5: Family Income vs GPA (Line Plot)
+st.subheader("5️⃣ GPA vs Family Income")
+fig, ax = plt.subplots(figsize=(6,4))
+sns.lineplot(data=df, x='Family Income', y='GPA', marker='o', ax=ax)
+ax.set_title("Trend of GPA by Family Income")
+st.pyplot(fig)
+
+# Visualization 6: Study Hours vs Family Support (Heatmap)
+st.subheader("6️⃣ Study Hours vs Family Support Level")
+pivot_table = pd.crosstab(df['Study Hours'], df['Family Support'])
+fig, ax = plt.subplots(figsize=(6,4))
+sns.heatmap(pivot_table, cmap="YlGnBu", ax=ax)
+ax.set_title("Relationship between Study Hours and Family Support")
+st.pyplot(fig)
+
+st.markdown("""
+**Interpretation:**  
+The findings indicate that students from families with higher education and income levels 
+often display slightly higher academic performance. Family support positively correlates with consistent study habits.
+""")
+
+# ============================================================
+# PAGE 3 – Computer Skills & Extracurricular Impact
+# ============================================================
+st.title("💻 Objective 3: Analyze Computer Skills and Extracurricular Impact")
+
+st.markdown("""
+**Objective Statement:**  
+To explore how computer proficiency and extracurricular participation relate to student academic performance.
+
+**Summary Box:**  
+This section visualizes how computer skills and non-academic activities influence GPA and study behavior.
+""")
+
+# Visualization 7: GPA by Computer Skill & Extracurricular (Grouped Bar)
+st.subheader("7️⃣ GPA by Computer Skill and Extracurricular Involvement")
+if all(col in df.columns for col in ['Computer Skill', 'Extracurricular', 'GPA']):
+    gpa_summary = df.groupby(['Computer Skill', 'Extracurricular'])['GPA'].mean().reset_index()
+    fig, ax = plt.subplots(figsize=(7,5))
+    sns.barplot(data=gpa_summary, x='Computer Skill', y='GPA', hue='Extracurricular', ax=ax)
+    ax.set_title("Average GPA by Computer Skill and Extracurricular Participation")
+    ax.set_xlabel("Computer Skill Level")
+    ax.set_ylabel("Average GPA")
+    ax.legend(title="Extracurricular Activity")
+    plt.xticks(rotation=0)
     st.pyplot(fig)
+else:
+    st.warning("Required columns for this visualization are missing.")
 
-# --------------------- Visualization Pages ---------------------
+# Visualization 8: GPA by Computer Skill (Box Plot)
+st.subheader("8️⃣ GPA Distribution by Computer Skill Level")
+fig, ax = plt.subplots(figsize=(6,4))
+sns.boxplot(data=df, x='Computer Skill', y='GPA', ax=ax, palette='coolwarm')
+ax.set_title("GPA Distribution by Computer Skill Level")
+st.pyplot(fig)
 
-if page == "Dataset Selection & Relevance":
-    st.header("Dataset Selection & Relevance")
+# Visualization 9: Study Hours vs Computer Skill (Bar Chart)
+st.subheader("9️⃣ Average Study Hours by Computer Skill")
+study_summary = df.groupby('Computer Skill')['Study Hours'].mean().reset_index()
+fig, ax = plt.subplots(figsize=(6,4))
+sns.barplot(data=study_summary, x='Computer Skill', y='Study Hours', ax=ax, palette='Set3')
+ax.set_title("Average Study Hours by Computer Skill Level")
+st.pyplot(fig)
 
-    st.markdown("""
-    **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
-    **Source:** Collected research dataset (`ResearchInformation3.csv`)  
-    **Type:** Structured CSV — includes academic, behavioral, and demographic data.  
-    """)
+st.markdown("""
+**Interpretation:**  
+Students with stronger computer skills and active extracurricular engagement 
+tend to manage study hours more efficiently and achieve higher GPAs.
+This highlights the importance of balanced technical and soft skills in academic success.
+""")
 
-    st.markdown("""
-    ### 🧩 Relevance
-    This dataset enables exploration of **academic trends**, **socioeconomic influences**,  
-    and **skills impact**, making it ideal for a scientific visualization study.
-    """)
-
-    st.dataframe(df.head(), use_container_width=True)
-    st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
-
-elif page == "Academic Performance Trends":
-    st.header("Objective 1: Academic Performance Trends")
-    st.subheader("Objective Statement")
-    st.write("Analyze GPA variation by department, gender, and attendance level.")
-
-    st.success("""
-    **Summary Box:**  
-    Higher attendance leads to higher GPA stability.  
-    Department-wise performance varies slightly, and gender impact is minimal.
-    """)
-
-    plot_chart("box", df, x='Department', y='Overall', title="GPA Distribution by Department")
-    plot_chart("violin", df, x='Gender', y='Overall', title="GPA by Gender")
-    plot_chart("bar", df, x='Attendance', y='Overall', title="Average GPA by Attendance")
-
-    st.markdown("""
-    **Interpretation:** Departments show varied GPA levels, with attendance being the strongest performance indicator.
-    """)
-
-elif page == "Socioeconomic & Lifestyle Factors":
-    st.header("Objective 2: Socioeconomic & Lifestyle Factors")
-    st.subheader("Objective Statement")
-    st.write("Investigate how income and gaming habits influence academic performance.")
-
-    st.success("""
-    **Summary Box:**  
-    Higher income correlates with better GPA due to access to resources.  
-    Extended gaming hours tend to lower performance levels.
-    """)
-
-    plot_chart("bar", df, x='Income', y='Overall', title="Average GPA by Income Level")
-    plot_chart("scatter", df, x='Gaming', y='Overall', title="Gaming Duration vs GPA")
-    corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr()
-    plot_chart("heatmap", corr, title="Correlation Heatmap")
-
-    st.markdown("""
-    **Interpretation:**  
-    Income and time management significantly influence GPA outcomes.
-    """)
-
-elif page == "Skills & Extracurricular Impact":
-    st.header("Objective 3: Skills & Extracurricular Impact")
-    st.subheader("Objective Statement")
-    st.write("Assess how English proficiency, computer skills, and extracurricular activities influence GPA.")
-
-    st.success("""
-    **Summary Box:**  
-    Strong language and technical skills support higher GPA.  
-    Students active in extracurriculars maintain balanced academic performance.
-    """)
-
-    plot_chart("scatter", df, x='Computer', y='Overall', hue='Extra', title="Computer Skills vs GPA by Extracurriculars")
-    plot_chart("line", df, x='English', y='Overall', title="Average GPA by English Proficiency")
-    plot_chart("bar", df, x='Extra', y='Overall', title="Average GPA by Extracurricular Involvement")
-
-    st.markdown("""
-    **Interpretation:**  
-    Higher technical proficiency enhances academic success; extracurriculars foster well-rounded students.
-    """)
-
-st.markdown("---")
-st.caption("Developed for Scientific Visualization Assignment © 2025")
+# ============================================================
+# End of Dashboard
+# ============================================================
+st.success("✅ Visualization report complete! Explore each objective using the sidebar.")
 
