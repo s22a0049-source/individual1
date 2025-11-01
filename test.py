@@ -10,29 +10,34 @@ except ImportError:
     seaborn_available = False
     st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
 
-st.set_page_config(page_title="Student Academic Visualization Report", layout="wide")
+st.title("📊 Student Academic Visualization Dashboard")
 
+st.markdown("""
+Explore the student dataset through **scientific visualization techniques**.
+Each section focuses on one objective to uncover meaningful academic insights.
+""")
+
+# Load dataset
 @st.cache_data
 def load_data():
-    df = pd.read_csv("ResearchInformation3.csv")
-    return df
+    return pd.read_csv("ResearchInformation3.csv")
 
 df = load_data()
 
-# Sidebar navigation inside this page
-st.sidebar.title("📊 Dashboard Navigation")
-page = st.sidebar.radio("Select Page", [
-    "Dataset Selection & Relevance",
-    "Page 1 – Academic Performance Trends",
-    "Page 2 – Socioeconomic & Lifestyle Factors",
-    "Page 3 – Skills & Extracurricular Impact"
+# Sidebar navigation within visualization page
+st.sidebar.header("📄 Visualization Pages")
+page = st.sidebar.radio("Select Analysis Section", [
+    "📘 Dataset Selection & Relevance",
+    "🎯 Academic Performance Trends",
+    "💰 Socioeconomic & Lifestyle Factors",
+    "🧠 Skills & Extracurricular Impact"
 ])
 
-# Universal plotting helper
+# Helper function
 def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
     fig, ax = plt.subplots(figsize=(8, 5))
     if seaborn_available:
-        sns.set(style="whitegrid", palette="Set2")
+        sns.set(style="whitegrid", palette="pastel")
         if kind == "box":
             sns.boxplot(x=x, y=y, data=data, ax=ax)
         elif kind == "violin":
@@ -61,37 +66,35 @@ def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-# ------------------------- PAGE CONTENT -------------------------
+# --------------------- Visualization Pages ---------------------
 
-if page == "Dataset Selection & Relevance":
-    st.title("🎓 Dataset Selection & Relevance")
+if page == "📘 Dataset Selection & Relevance":
+    st.header("📘 Dataset Selection & Relevance")
 
     st.markdown("""
-    **Dataset Title:** Student Academic and Behavioral Research Information  
-    **Source:** Internal dataset (`ResearchInformation3.csv`)  
-    **Type:** Structured CSV file  
-    **Scope:** Student records with gender, department, attendance, income, grades, and extracurricular data.
+    **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
+    **Source:** Collected research dataset (`ResearchInformation3.csv`)  
+    **Type:** Structured CSV — includes academic, behavioral, and demographic data.  
     """)
 
     st.markdown("""
-    ### 🧩 Relevance & Justification
-    This dataset is ideal for exploring **academic success patterns** across multiple variables:
-    - Academic trends by gender and department  
-    - Effects of socioeconomic factors on performance  
-    - Skills and extracurricular engagement impact
+    ### 🧩 Relevance
+    This dataset enables exploration of **academic trends**, **socioeconomic influences**,  
+    and **skills impact**, making it ideal for a scientific visualization study.
     """)
 
     st.dataframe(df.head(), use_container_width=True)
     st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
-elif page == "Page 1 – Academic Performance Trends":
-    st.title("🎯 Objective 1: Academic Performance Trends")
-    st.info("Objective: Examine variations in academic performance across departments, gender, and attendance.")
+elif page == "🎯 Academic Performance Trends":
+    st.header("🎯 Objective 1: Academic Performance Trends")
+    st.subheader("Objective Statement")
+    st.write("Analyze GPA variation by department, gender, and attendance level.")
 
-    st.markdown("""
-    ### 🧾 Summary Box
-    Higher attendance and consistent departmental results correlate with better GPA outcomes.
-    Gender differences are minimal, but attendance strongly predicts GPA stability.
+    st.success("""
+    **Summary Box:**  
+    Higher attendance leads to higher GPA stability.  
+    Department-wise performance varies slightly, and gender impact is minimal.
     """)
 
     plot_chart("box", df, x='Department', y='Overall', title="GPA Distribution by Department")
@@ -99,41 +102,39 @@ elif page == "Page 1 – Academic Performance Trends":
     plot_chart("bar", df, x='Attendance', y='Overall', title="Average GPA by Attendance")
 
     st.markdown("""
-    **Interpretation:**  
-    - Departments with balanced assessments show stable GPA distributions.  
-    - Gender has a minor influence, while attendance remains the most significant predictor.
+    **Interpretation:** Departments show varied GPA levels, with attendance being the strongest performance indicator.
     """)
 
-elif page == "Page 2 – Socioeconomic & Lifestyle Factors":
-    st.title("💰 Objective 2: Socioeconomic and Lifestyle Factors")
-    st.info("Objective: Explore how income, hometown, and gaming habits influence GPA.")
+elif page == "💰 Socioeconomic & Lifestyle Factors":
+    st.header("💰 Objective 2: Socioeconomic & Lifestyle Factors")
+    st.subheader("Objective Statement")
+    st.write("Investigate how income and gaming habits influence academic performance.")
 
-    st.markdown("""
-    ### 🧾 Summary Box
-    Students from higher-income families and urban areas perform better academically.  
-    Longer gaming hours are linked to lower GPAs.
+    st.success("""
+    **Summary Box:**  
+    Higher income correlates with better GPA due to access to resources.  
+    Extended gaming hours tend to lower performance levels.
     """)
 
-    plot_chart("bar", df, x='Income', y='Overall', title="Average GPA by Income")
-    plot_chart("scatter", df, x='Gaming', y='Overall', title="Gaming Time vs GPA")
+    plot_chart("bar", df, x='Income', y='Overall', title="Average GPA by Income Level")
+    plot_chart("scatter", df, x='Gaming', y='Overall', title="Gaming Duration vs GPA")
     corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr()
     plot_chart("heatmap", corr, title="Correlation Heatmap")
 
     st.markdown("""
     **Interpretation:**  
-    - Income positively affects GPA due to improved access to resources.  
-    - Excessive gaming correlates with reduced focus and lower GPA.  
-    - English and Computer scores are strongly correlated with GPA.
+    Income and time management significantly influence GPA outcomes.
     """)
 
-elif page == "Page 3 – Skills & Extracurricular Impact":
-    st.title("🧠 Objective 3: Skills and Extracurricular Impact")
-    st.info("Objective: Assess how computer literacy, English proficiency, and extracurricular participation affect GPA.")
+elif page == "🧠 Skills & Extracurricular Impact":
+    st.header("🧠 Objective 3: Skills & Extracurricular Impact")
+    st.subheader("Objective Statement")
+    st.write("Assess how English proficiency, computer skills, and extracurricular activities influence GPA.")
 
-    st.markdown("""
-    ### 🧾 Summary Box
-    Students with strong computer and English skills achieve higher GPAs.  
-    Extracurricular participation fosters balanced and improved performance.
+    st.success("""
+    **Summary Box:**  
+    Strong language and technical skills support higher GPA.  
+    Students active in extracurriculars maintain balanced academic performance.
     """)
 
     plot_chart("scatter", df, x='Computer', y='Overall', hue='Extra', title="Computer Skills vs GPA by Extracurriculars")
@@ -142,10 +143,9 @@ elif page == "Page 3 – Skills & Extracurricular Impact":
 
     st.markdown("""
     **Interpretation:**  
-    - High technical and language proficiency improves GPA.  
-    - Extracurricular involvement enhances overall student performance balance.
+    Higher technical proficiency enhances academic success; extracurriculars foster well-rounded students.
     """)
 
-st.sidebar.markdown("---")
-st.sidebar.caption("Developed for Scientific Visualization Assignment © 2025")
+st.markdown("---")
+st.caption("Developed for Scientific Visualization Assignment © 2025")
 
