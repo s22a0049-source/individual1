@@ -8,7 +8,7 @@ try:
     seaborn_available = True
 except ImportError:
     seaborn_available = False
-    st.warning("⚠️ Seaborn is not installed. Using Matplotlib fallback mode.")
+    st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
 
 # =======================================================
 # PAGE CONFIGURATION
@@ -36,18 +36,5 @@ page = st.sidebar.radio("Go to section:", [
     "Page 3 – Skills & Extracurricular Impact"
 ])
 
-# =======================================================
-# HELPER FUNCTION (UNIVERSAL PLOTTING)
-# =======================================================
-def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
-    """Helper function to plot with Seaborn or Matplotlib fallback."""
-    fig, ax = plt.subplots(figsize=(8, 5))
-    if seaborn_available:
-        import seaborn as sns
-        sns.set(style="whitegrid", palette="Set2")
-        if kind == "box":
-            sns.boxplot(x=x, y=y, data=data, ax=ax)
-        elif kind == "violin":
-            sns.violinplot(x=x, y=y, data=data, inner='quartile', ax=ax)
-        elif kin
+# ======================================
 
