@@ -8,16 +8,10 @@ try:
     seaborn_available = True
 except ImportError:
     seaborn_available = False
-    st.warning("⚠️ Seaborn is not installed. Using Matplotlib fallback mode.")
+    st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
 
-# =======================================================
-# PAGE CONFIGURATION
-# =======================================================
 st.set_page_config(page_title="Student Academic Visualization Report", layout="wide")
 
-# =======================================================
-# LOAD DATA
-# =======================================================
 @st.cache_data
 def load_data():
     df = pd.read_csv("ResearchInformation3.csv")
@@ -25,25 +19,19 @@ def load_data():
 
 df = load_data()
 
-# =======================================================
-# SIDEBAR NAVIGATION
-# =======================================================
-st.sidebar.title("📊 Navigation Panel")
-page = st.sidebar.radio("Go to section:", [
+# Sidebar navigation inside this page
+st.sidebar.title("📊 Dashboard Navigation")
+page = st.sidebar.radio("Select Page", [
     "Dataset Selection & Relevance",
     "Page 1 – Academic Performance Trends",
     "Page 2 – Socioeconomic & Lifestyle Factors",
     "Page 3 – Skills & Extracurricular Impact"
 ])
 
-# =======================================================
-# HELPER FUNCTION (UNIVERSAL PLOTTING)
-# =======================================================
+# Universal plotting helper
 def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
-    """Helper function to plot with Seaborn or Matplotlib fallback."""
     fig, ax = plt.subplots(figsize=(8, 5))
     if seaborn_available:
-        import seaborn as sns
         sns.set(style="whitegrid", palette="Set2")
         if kind == "box":
             sns.boxplot(x=x, y=y, data=data, ax=ax)
@@ -69,20 +57,18 @@ def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
         elif kind == "heatmap":
             cax = ax.matshow(data.corr(), cmap='coolwarm')
             fig.colorbar(cax)
-    if title:
-        ax.set_title(title)
+    ax.set_title(title)
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-# =======================================================
-# PAGE 1: DATASET SELECTION & RELEVANCE
-# =======================================================
+# ------------------------- PAGE CONTENT -------------------------
+
 if page == "Dataset Selection & Relevance":
     st.title("🎓 Dataset Selection & Relevance")
 
     st.markdown("""
     **Dataset Title:** Student Academic and Behavioral Research Information  
-    **Source:** Internal dataset (ResearchInformation3.csv)  
+    **Source:** Internal dataset (`ResearchInformation3.csv`)  
     **Type:** Structured CSV file  
     **Scope:** Student records with gender, department, attendance, income, grades, and extracurricular data.
     """)
@@ -98,9 +84,6 @@ if page == "Dataset Selection & Relevance":
     st.dataframe(df.head(), use_container_width=True)
     st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
-# =======================================================
-# PAGE 2: ACADEMIC PERFORMANCE TRENDS
-# =======================================================
 elif page == "Page 1 – Academic Performance Trends":
     st.title("🎯 Objective 1: Academic Performance Trends")
     st.info("Objective: Examine variations in academic performance across departments, gender, and attendance.")
@@ -117,20 +100,17 @@ elif page == "Page 1 – Academic Performance Trends":
 
     st.markdown("""
     **Interpretation:**  
-    - Departments with balanced assessment systems show stable GPA ranges.  
-    - Gender influence is minor; attendance is the strongest GPA predictor.
+    - Departments with balanced assessments show stable GPA distributions.  
+    - Gender has a minor influence, while attendance remains the most significant predictor.
     """)
 
-# =======================================================
-# PAGE 3: SOCIOECONOMIC & LIFESTYLE FACTORS
-# =======================================================
 elif page == "Page 2 – Socioeconomic & Lifestyle Factors":
     st.title("💰 Objective 2: Socioeconomic and Lifestyle Factors")
     st.info("Objective: Explore how income, hometown, and gaming habits influence GPA.")
 
     st.markdown("""
     ### 🧾 Summary Box
-    Students from higher-income families and city regions perform better academically.
+    Students from higher-income families and urban areas perform better academically.  
     Longer gaming hours are linked to lower GPAs.
     """)
 
@@ -141,14 +121,11 @@ elif page == "Page 2 – Socioeconomic & Lifestyle Factors":
 
     st.markdown("""
     **Interpretation:**  
-    - Income positively influences GPA via better access to learning resources.  
-    - Excessive gaming time reduces focus and GPA.  
-    - English and Computer subjects strongly correlate with Overall performance.
+    - Income positively affects GPA due to improved access to resources.  
+    - Excessive gaming correlates with reduced focus and lower GPA.  
+    - English and Computer scores are strongly correlated with GPA.
     """)
 
-# =======================================================
-# PAGE 4: SKILLS & EXTRACURRICULAR IMPACT
-# =======================================================
 elif page == "Page 3 – Skills & Extracurricular Impact":
     st.title("🧠 Objective 3: Skills and Extracurricular Impact")
     st.info("Objective: Assess how computer literacy, English proficiency, and extracurricular participation affect GPA.")
@@ -165,12 +142,10 @@ elif page == "Page 3 – Skills & Extracurricular Impact":
 
     st.markdown("""
     **Interpretation:**  
-    - High skill levels in English and Computer Science boost GPA consistency.  
-    - Students active in extracurriculars demonstrate well-rounded academic outcomes.
+    - High technical and language proficiency improves GPA.  
+    - Extracurricular involvement enhances overall student performance balance.
     """)
 
-# =======================================================
-# FOOTER
-# =======================================================
 st.sidebar.markdown("---")
 st.sidebar.caption("Developed for Scientific Visualization Assignment © 2025")
+
