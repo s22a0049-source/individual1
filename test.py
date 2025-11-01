@@ -26,7 +26,7 @@ df = load_data()
 # --------------------------------------------
 # Sidebar Navigation
 # --------------------------------------------
-st.sidebar.header("📄 Visualization Pages")
+st.sidebar.header("Menu")
 page = st.sidebar.radio("Select Analysis Section", [
     "Dataset Selection & Relevance",
     "Academic Performance Trends",
