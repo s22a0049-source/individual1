@@ -1,115 +1,137 @@
 import streamlit as st
 import pandas as pd
-import altair as alt
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Multi-page Data App", layout="centered")
+# Page setup
+st.set_page_config(page_title="Student Academic Visualization Report", layout="wide")
 
-PAGES = {
-    "Home": "home",
-    "Upload & Preview": "upload",
-    "Charts": "charts",
-    "About": "about",
-}
+# Load dataset
+df = pd.read_csv("ResearchInformation3.csv")
 
-page = st.sidebar.radio("Navigation", list(PAGES.keys()))
+# Sidebar navigation
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to:", [
+    "Dataset Overview",
+    "Page 1 – Academic Performance Trends",
+    "Page 2 – Socioeconomic & Lifestyle Factors",
+    "Page 3 – Skills & Extracurricular Impact"
+])
 
-def render_home():
-    st.title("Multi-page Streamlit App")
-    st.markdown(
-        """
-        This demo app shows:
-        - a file upload & preview page (CSV)
-        - simple interactive charts using Altair
-        - a small about page
+# Apply consistent theme
+sns.set(style="whitegrid", palette="pastel")
 
-        Use the sidebar to navigate.
-        """
-    )
+# =======================================================
+# PAGE 0: DATASET OVERVIEW
+# =======================================================
+if page == "Dataset Overview":
+    st.title("🎓 Student Academic Visualization Report")
+    st.markdown("""
+    This dashboard explores how **academic performance** is influenced by
+    various **socioeconomic, lifestyle, and skill-related factors** among students.
+    """)
+    
+    st.subheader("📘 Dataset Overview")
+    st.write(df.head())
 
-def render_upload():
-    st.title("Upload & Preview")
-    st.write("Upload a CSV file to preview the data and set chart options on the Charts page.")
-    uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
-    if uploaded_file is None:
-        st.info("No file uploaded. You can use the sample dataset button below to load a demo.")
-        if st.button("Load sample dataset (iris)"):
-            df = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv")
-            st.session_state["uploaded_df"] = df
-            st.success("Sample dataset loaded into session.")
-    else:
-        try:
-            df = pd.read_csv(uploaded_file)
-            st.session_state["uploaded_df"] = df
-            st.success(f"Loaded {len(df):,} rows and {len(df.columns):,} columns.")
-        except Exception as e:
-            st.error(f"Failed to read CSV: {e}")
+    st.markdown("**Dataset Summary:**")
+    st.write(df.describe(include='all'))
 
-    if "uploaded_df" in st.session_state:
-        df = st.session_state["uploaded_df"]
-        st.subheader("Preview")
-        st.dataframe(df.head(50))
-        with st.expander("Data types and summary (first rows)"):
-            st.write(df.dtypes)
-            st.write(df.describe(include="all"))
+    st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
-def render_charts():
-    st.title("Charts")
-    if "uploaded_df" not in st.session_state:
-        st.warning("No dataset available. Go to Upload & Preview and upload a CSV or load the sample dataset.")
-        return
+# =======================================================
+# PAGE 1: Academic Performance Trends
+# =======================================================
+elif page == "Page 1 – Academic Performance Trends":
+    st.header("🎯 Objective 1: Academic Performance Trends")
+    st.markdown("""
+    **Objective:** Analyze variations in academic performance across departments, gender, and attendance levels.
+    
+    **Key Insight:** Higher attendance and consistent departmental performance contribute positively to overall GPA.
+    """)
 
-    df = st.session_state["uploaded_df"]
-    st.subheader("Select columns for charting")
-    numeric_columns = df.select_dtypes(include=["number"]).columns.tolist()
-    categorical_columns = df.select_dtypes(include=["object", "category"]).columns.tolist()
+    # 1. Boxplot – GPA by Department
+    st.subheader("Overall GPA Distribution by Department")
+    fig, ax = plt.subplots(figsize=(10,6))
+    sns.boxplot(x='Department', y='Overall', data=df, ax=ax)
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
 
-    if not numeric_columns:
-        st.error("No numeric columns found in the dataset for charting.")
-        st.dataframe(df.head())
-        return
+    # 2. Violin Plot – GPA by Gender
+    st.subheader("Overall GPA by Gender")
+    fig, ax = plt.subplots(figsize=(6,5))
+    sns.violinplot(x='Gender', y='Overall', data=df, inner='box', ax=ax)
+    st.pyplot(fig)
 
-    x_col = st.selectbox("X axis (numeric)", numeric_columns, index=0)
-    y_col = st.selectbox("Y axis (numeric)", numeric_columns, index=min(1, len(numeric_columns)-1))
-    color_col = st.selectbox("Color (optional)", [None] + categorical_columns)
+    # 3. Bar Chart – GPA by Attendance
+    st.subheader("Average GPA by Attendance Level")
+    fig, ax = plt.subplots(figsize=(7,5))
+    sns.barplot(x='Attendance', y='Overall', data=df, estimator='mean', ci=None, ax=ax)
+    st.pyplot(fig)
 
-    st.markdown("### Scatter plot (Altair)")
-    base = alt.Chart(df).mark_circle(size=60).encode(
-        x=alt.X(x_col, type="quantitative"),
-        y=alt.Y(y_col, type="quantitative"),
-        tooltip=list(df.columns[:6])  # show first few cols in tooltip
-    )
-    if color_col:
-        base = base.encode(color=alt.Color(color_col, legend=alt.Legend(title=color_col)))
-    chart = base.interactive()
-    st.altair_chart(chart, use_container_width=True)
+# =======================================================
+# PAGE 2: Socioeconomic & Lifestyle Factors
+# =======================================================
+elif page == "Page 2 – Socioeconomic & Lifestyle Factors":
+    st.header("💰 Objective 2: Socioeconomic and Lifestyle Factors")
+    st.markdown("""
+    **Objective:** Explore how income, hometown, and gaming habits influence academic performance.
+    
+    **Key Insight:** Students from higher income families and cities show higher GPAs, while heavy gaming time is linked to lower performance.
+    """)
 
-    st.markdown("### Histogram of X")
-    hist = alt.Chart(df).mark_bar().encode(
-        alt.X(x_col, bin=alt.Bin(maxbins=40)),
-        y='count()'
-    ).interactive()
-    st.altair_chart(hist, use_container_width=True)
+    # 4. Bar Chart – Average GPA by Income
+    st.subheader("Average GPA by Family Income")
+    fig, ax = plt.subplots(figsize=(10,6))
+    sns.barplot(x='Income', y='Overall', data=df, estimator='mean', ci=None, ax=ax)
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
 
-    st.markdown("### Quick stats")
-    st.write(df[[x_col, y_col]].describe())
+    # 5. Scatter Plot – Gaming Time vs GPA
+    st.subheader("Gaming Time vs GPA")
+    fig, ax = plt.subplots(figsize=(8,6))
+    sns.stripplot(x='Gaming', y='Overall', data=df, jitter=True, ax=ax)
+    st.pyplot(fig)
 
-def render_about():
-    st.title("About")
-    st.markdown(
-        """
-        - App: Multi-page demo with file upload and Altair charts
-        - How it works: Uploaded CSV is stored in session_state under `uploaded_df`.
-        - To extend: add more pages, caching, model inference, or downloadable results.
-        """
-    )
+    # 6. Heatmap – Correlation between academic metrics
+    st.subheader("Correlation Heatmap (HSC, SSC, Computer, English, GPA)")
+    fig, ax = plt.subplots(figsize=(6,4))
+    corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr()
+    sns.heatmap(corr, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
+    st.pyplot(fig)
 
-if PAGES[page] == "home":
-    render_home()
-elif PAGES[page] == "upload":
-    render_upload()
-elif PAGES[page] == "charts":
-    render_charts()
-elif PAGES[page] == "about":
-    render_about()
-else:
-    st.error("Page not found.")
+# =======================================================
+# PAGE 3: Skills & Extracurricular Impact
+# =======================================================
+elif page == "Page 3 – Skills & Extracurricular Impact":
+    st.header("🧠 Objective 3: Skills and Extracurricular Impact")
+    st.markdown("""
+    **Objective:** Assess how computer literacy, English proficiency, and extracurricular participation affect student outcomes.
+    
+    **Key Insight:** Students with strong technical/language skills and active extracurricular participation tend to perform better academically.
+    """)
+
+    # 7. Scatter Plot – Computer Skills vs GPA (colored by Extra)
+    st.subheader("Computer Skills vs GPA (by Extracurricular Involvement)")
+    fig, ax = plt.subplots(figsize=(7,5))
+    sns.scatterplot(x='Computer', y='Overall', hue='Extra', data=df, s=80, ax=ax)
+    st.pyplot(fig)
+
+    # 8. Line Chart – Average GPA by English Proficiency
+    st.subheader("Average GPA by English Proficiency Level")
+    fig, ax = plt.subplots(figsize=(7,5))
+    sns.lineplot(x='English', y='Overall', data=df, estimator='mean', ci=None, marker='o', ax=ax)
+    st.pyplot(fig)
+
+    # 9. Grouped Bar Chart – GPA by Extracurricular Participation
+    st.subheader("Average GPA by Extracurricular Participation")
+    fig, ax = plt.subplots(figsize=(6,5))
+    sns.barplot(x='Extra', y='Overall', data=df, estimator='mean', ci=None, ax=ax)
+    st.pyplot(fig)
+
+# =======================================================
+# FOOTER
+# =======================================================
+st.sidebar.markdown("---")
+st.sidebar.info("Developed for Scientific Visualization Assignment\n© 2025 Student Performance Analysis")
+
