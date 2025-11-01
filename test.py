@@ -108,17 +108,24 @@ elif page == "Academic Performance Trends":
         values='Overall',
         names='Attendance',
         title="Average GPA by Attendance Level",
-        color_discrete_sequence=px.colors.sequential.RdBu
+        color_discrete_sequence=px.colors.sequential.Blues
     )
-    fig3.update_traces(textinfo='percent+label', pull=[0.05]*len(avg_attendance))
+    fig3.update_traces(
+        textinfo='percent+label',
+        pull=[0.05]*len(avg_attendance),
+        textfont_size=14
+    )
+    fig3.update_layout(
+        font=dict(size=14)
+    )
     st.plotly_chart(fig3, use_container_width=True)
 
     st.markdown("""
     **Interpretation:**  
-    - The boxplot shows that some departments have more consistent GPA ranges.  
-    - The histogram reveals minimal GPA difference between genders.  
-    - The **pie chart** clearly shows that students with **higher attendance** contribute most to strong GPA averages, 
-      emphasizing the importance of consistent class participation.
+    - The boxplot shows that some departments maintain more consistent GPA ranges.  
+    - The histogram indicates GPA distribution is similar across genders.  
+    - The **pie chart** highlights that students with **high attendance** contribute the most to strong GPA performance,  
+      reaffirming attendance as a key factor in academic success.
     """)
 
 # --------------------------------------------
