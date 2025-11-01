@@ -196,15 +196,20 @@ elif page == "Skills & Extracurricular Impact":
     st.plotly_chart(fig8, use_container_width=True)
 
     # 9️⃣ Bar Chart – GPA by Extracurricular Involvement
-    extra_mean = df.groupby('Extra')['Overall'].mean().reset_index()
-    fig9 = px.pie(
+    extra_mean = df.groupby('Extra')['Overall'].mean().reset_index().sort_values('Extra')
+    fig9 = px.line(
         extra_mean,
-        names='Extra',
-        values='Overall',
-        title="Average GPA Distribution by Extracurricular Involvement",
-        hole=0.4  # makes it a donut chart
+        x='Extra',
+        y='Overall',
+        markers=True,
+        title="Average GPA by Level of Extracurricular Involvement"
     )
-    fig9.update_traces(textinfo='percent+label')
+    fig9.update_layout(
+        xaxis_title="Extracurricular Involvement",
+        yaxis_title="Average GPA",
+            plot_bgcolor="white",
+    font=dict(size=14)
+    )
     st.plotly_chart(fig9, use_container_width=True)
 
 # --------------------------------------------
