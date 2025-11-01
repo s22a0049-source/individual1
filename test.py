@@ -152,32 +152,27 @@ elif page == "Socioeconomic & Lifestyle Factors":
     fig4.update_layout(yaxis_title="Average GPA", showlegend=False)
     st.plotly_chart(fig4, use_container_width=True)
 
-  # --- 5️⃣ Violin Plot – GPA Distribution by Gaming Hours (Enhanced Blue) ---
-fig5 = px.violin(
-    df,
-    x='Gaming',
-    y='Overall',
-    box=True,
-    points='all',
-    color='Gaming',
-    title="GPA Distribution by Gaming Hours",
-    color_discrete_sequence=px.colors.sequential.Blues_r  # reversed for darker tones
-)
-fig5.update_layout(
-    plot_bgcolor='white',
-    xaxis_title="Gaming Hours (per day)",
-    yaxis_title="GPA",
-    font=dict(size=14),
-    showlegend=False
-)
-fig5.update_traces(
-    line_color="darkblue",  # outline darker blue for contrast
-    fillcolor="rgba(0, 102, 204, 0.5)"  # vivid translucent blue fill
-)
-st.plotly_chart(fig5, use_container_width=True)
+     # --- 5️⃣ Violin Plot – GPA Distribution by Gaming Hours ---
+    fig5 = px.violin(
+        df,
+        x='Gaming',
+        y='Overall',
+        box=True,
+        points='all',
+        color='Gaming',
+        title="GPA Distribution by Gaming Hours",
+        color_discrete_sequence=px.colors.sequential.Blues
+    )
+    fig5.update_layout(
+        plot_bgcolor='white',
+        xaxis_title="Gaming Hours (per day)",
+        yaxis_title="GPA",
+        font=dict(size=14),
+        showlegend=False
+    )
+    st.plotly_chart(fig5, use_container_width=True)
 
 
-    
     # 6️⃣ Heatmap – Correlation Matrix
     corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr().round(2)
     fig6 = px.imshow(
