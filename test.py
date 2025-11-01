@@ -7,7 +7,7 @@ import plotly.express as px
 # --------------------------------------------
 st.set_page_config(page_title="Student Academic Visualization Dashboard", layout="wide")
 
-st.title("📊 Student Academic Visualization Dashboard")
+st.title("Student Academic Visualization Dashboard")
 
 st.markdown("""
 Explore the student dataset through **interactive scientific visualizations**.
@@ -26,19 +26,19 @@ df = load_data()
 # --------------------------------------------
 # Sidebar Navigation
 # --------------------------------------------
-st.sidebar.header("📄 Visualization Pages")
+st.sidebar.header("Menu")
 page = st.sidebar.radio("Select Analysis Section", [
-    "📘 Dataset Selection & Relevance",
-    "🎯 Academic Performance Trends",
-    "💰 Socioeconomic & Lifestyle Factors",
-    "🧠 Skills & Extracurricular Impact"
+    "Dataset Selection & Relevance",
+    "Academic Performance Trends",
+    "Socioeconomic & Lifestyle Factors",
+    "Skills & Extracurricular Impact"
 ])
 
 # --------------------------------------------
-# 📘 Dataset Selection & Relevance
+# Dataset Selection & Relevance
 # --------------------------------------------
-if page == "📘 Dataset Selection & Relevance":
-    st.header("📘 Dataset Selection & Relevance")
+if page == "Dataset Selection & Relevance":
+    st.header("Dataset Selection & Relevance")
 
     st.markdown("""
     **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
@@ -47,7 +47,7 @@ if page == "📘 Dataset Selection & Relevance":
     """)
 
     st.markdown("""
-    ### 🧩 Relevance
+    ### Relevance
     This dataset explores **academic performance**, **socioeconomic status**, and **skills**.
     It supports visualization-based analysis of student success factors.
     """)
@@ -56,10 +56,10 @@ if page == "📘 Dataset Selection & Relevance":
     st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
 # --------------------------------------------
-# 🎯 Objective 1: Academic Performance Trends
+# Objective 1: Academic Performance Trends
 # --------------------------------------------
-elif page == "🎯 Academic Performance Trends":
-    st.header("🎯 Objective 1: Academic Performance Trends")
+elif page == "Academic Performance Trends":
+    st.header("Objective 1: Academic Performance Trends")
     st.subheader("Objective Statement")
     st.write("Analyze GPA variation by department, gender, and attendance level.")
 
@@ -98,10 +98,10 @@ elif page == "🎯 Academic Performance Trends":
     """)
 
 # --------------------------------------------
-# 💰 Objective 2: Socioeconomic & Lifestyle Factors
+# Objective 2: Socioeconomic & Lifestyle Factors
 # --------------------------------------------
-elif page == "💰 Socioeconomic & Lifestyle Factors":
-    st.header("💰 Objective 2: Socioeconomic & Lifestyle Factors")
+elif page == "Socioeconomic & Lifestyle Factors":
+    st.header("Objective 2: Socioeconomic & Lifestyle Factors")
     st.subheader("Objective Statement")
     st.write("Investigate how income and gaming habits influence academic performance.")
 
@@ -142,10 +142,10 @@ elif page == "💰 Socioeconomic & Lifestyle Factors":
     """)
 
 # --------------------------------------------
-# 🧠 Objective 3: Skills & Extracurricular Impact
+# Objective 3: Skills & Extracurricular Impact
 # --------------------------------------------
-elif page == "🧠 Skills & Extracurricular Impact":
-    st.header("🧠 Objective 3: Skills & Extracurricular Impact")
+elif page == "Skills & Extracurricular Impact":
+    st.header("Objective 3: Skills & Extracurricular Impact")
     st.subheader("Objective Statement")
     st.write("Assess how English proficiency, computer skills, and extracurricular activities influence GPA.")
 
