@@ -69,33 +69,59 @@ elif page == "Academic Performance Trends":
     Department-wise performance varies slightly, and gender impact is minimal.
     """)
 
-    # 1️⃣ Boxplot – Overall GPA by Department
+    # --- 1️⃣ Boxplot – Overall GPA by Department ---
     fig1 = px.box(
-        df, x='Department', y='Overall', color='Department',
-        title="Overall GPA Distribution by Department", points='all'
+        df,
+        x='Department',
+        y='Overall',
+        color='Department',
+        title="Overall GPA Distribution by Department"
+    )
+    fig1.update_layout(
+        xaxis_title="Department",
+        yaxis_title="Overall GPA",
+        showlegend=False
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # 2️⃣ Violin Plot – GPA by Gender
-    fig2 = px.violin(
-        df, x='Gender', y='Overall', color='Gender',
-        box=True, points='all', title="Overall GPA by Gender"
+    # --- 2️⃣ Histogram – GPA Distribution by Gender ---
+    fig2 = px.histogram(
+        df,
+        x='Overall',
+        color='Gender',
+        barmode='overlay',
+        opacity=0.7,
+        nbins=20,
+        title="GPA Frequency Distribution by Gender"
+    )
+    fig2.update_layout(
+        xaxis_title="Overall GPA",
+        yaxis_title="Number of Students",
+        bargap=0.1
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # 3️⃣ Bar Chart – Average GPA by Attendance
-    avg_att = df.groupby('Attendance', as_index=False)['Overall'].mean()
+    # --- 3️⃣ Bar Chart – Average GPA by Attendance ---
     fig3 = px.bar(
-        avg_att, x='Attendance', y='Overall', color='Attendance',
-        text='Overall', title="Average GPA by Attendance Level"
+        df.groupby('Attendance')['Overall'].mean().reset_index(),
+        x='Attendance',
+        y='Overall',
+        title="Average GPA by Attendance Level",
+        text_auto=True
     )
-    fig3.update_traces(texttemplate='%{text:.2f}', textposition='outside')
-    fig3.update_layout(yaxis_title="Average GPA", showlegend=False)
+    fig3.update_layout(
+        xaxis_title="Attendance Level",
+        yaxis_title="Average GPA"
+    )
     st.plotly_chart(fig3, use_container_width=True)
 
     st.markdown("""
-    **Interpretation:** Departments show varied GPA levels, with attendance being the strongest performance indicator.
+    **Interpretation:**  
+    - Departments show varied GPA levels, indicating different grading or performance patterns.  
+    - The histogram shows a balanced GPA distribution between genders, with only minor variation.  
+    - Attendance remains the strongest and most consistent factor influencing GPA outcomes.
     """)
+
 
 # --------------------------------------------
 # Objective 2: Socioeconomic & Lifestyle Factors
