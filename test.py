@@ -84,20 +84,10 @@ elif page == "Academic Performance Trends":
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # --- 2️⃣ Histogram – GPA Distribution by Gender ---
-    fig2 = px.histogram(
-        df,
-        x='Overall',
-        color='Gender',
-        barmode='overlay',
-        opacity=0.7,
-        nbins=20,
-        title="GPA Frequency Distribution by Gender"
-    )
-    fig2.update_layout(
-        xaxis_title="Overall GPA",
-        yaxis_title="Number of Students",
-        bargap=0.1
+    # 2️⃣ Violin Plot – GPA by Gender
+    fig2 = px.violin(
+        df, x='Gender', y='Overall', color='Gender',
+        box=True, points='all', title="Overall GPA by Gender"
     )
     st.plotly_chart(fig2, use_container_width=True)
 
