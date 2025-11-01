@@ -17,7 +17,7 @@ st.set_page_config(page_title="Student Survey Dashboard", layout="wide")
 # -----------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("ResearchInformation3_cleaned.csv")
+    df = pd.read_csv("ResearchInformation3.csv")
     df = df.dropna(axis=1, how='all')
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     df = df.drop_duplicates()
