@@ -1,96 +1,65 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 
-# Try importing seaborn safely
-try:
-    import seaborn as sns
-    seaborn_available = True
-except ImportError:
-    seaborn_available = False
-    st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
+# --------------------------------------------
+# Streamlit Page Setup
+# --------------------------------------------
+st.set_page_config(page_title="Student Academic Visualization Dashboard", layout="wide")
 
-st.title("Student Academic Visualization Dashboard")
+st.title("📊 Student Academic Visualization Dashboard")
 
 st.markdown("""
-Explore the student dataset through **scientific visualization techniques**.
+Explore the student dataset through **interactive scientific visualizations**.
 Each section focuses on one objective to uncover meaningful academic insights.
 """)
 
-# Load dataset
+# --------------------------------------------
+# Load Dataset
+# --------------------------------------------
 @st.cache_data
 def load_data():
     return pd.read_csv("ResearchInformation3.csv")
 
 df = load_data()
 
-# Sidebar navigation within visualization page
+# --------------------------------------------
+# Sidebar Navigation
+# --------------------------------------------
 st.sidebar.header("📄 Visualization Pages")
 page = st.sidebar.radio("Select Analysis Section", [
-    "Dataset Selection & Relevance",
-    "Academic Performance Trends",
-    "Socioeconomic & Lifestyle Factors",
-    "Skills & Extracurricular Impact"
+    "📘 Dataset Selection & Relevance",
+    "🎯 Academic Performance Trends",
+    "💰 Socioeconomic & Lifestyle Factors",
+    "🧠 Skills & Extracurricular Impact"
 ])
 
-# Helper function for plotting
-def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
-    fig, ax = plt.subplots(figsize=(8, 5))
-    if seaborn_available:
-        sns.set(style="whitegrid", palette="pastel")
-        if kind == "box":
-            sns.boxplot(x=x, y=y, data=data, ax=ax)
-        elif kind == "violin":
-            sns.violinplot(x=x, y=y, data=data, inner='quartile', ax=ax)
-        elif kind == "bar":
-            sns.barplot(x=x, y=y, data=data, ci=None, ax=ax)
-        elif kind == "grouped_bar":
-            sns.barplot(x=x, y=y, hue=hue, data=data, ci=None, ax=ax)
-        elif kind == "scatter":
-            sns.scatterplot(x=x, y=y, hue=hue, data=data, s=80, ax=ax)
-        elif kind == "heatmap":
-            sns.heatmap(data, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
-        elif kind == "line":
-            sns.lineplot(x=x, y=y, data=data, marker='o', ci=None, ax=ax)
-    else:
-        if kind == "bar":
-            data.groupby(x)[y].mean().plot(kind='bar', ax=ax)
-        elif kind == "grouped_bar":
-            grouped = data.groupby([x, hue])[y].mean().unstack()
-            grouped.plot(kind='bar', ax=ax)
-        elif kind == "scatter":
-            ax.scatter(data[x], data[y], alpha=0.6)
-        elif kind == "line":
-            data.groupby(x)[y].mean().plot(kind='line', marker='o', ax=ax)
-        elif kind == "heatmap":
-            cax = ax.matshow(data.corr(), cmap='coolwarm')
-            fig.colorbar(cax)
-    ax.set_title(title)
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
-
-# --------------------- Visualization Pages ---------------------
-
-if page == "Dataset Selection & Relevance":
-    st.header("Dataset Selection & Relevance")
+# --------------------------------------------
+# 📘 Dataset Selection & Relevance
+# --------------------------------------------
+if page == "📘 Dataset Selection & Relevance":
+    st.header("📘 Dataset Selection & Relevance")
 
     st.markdown("""
     **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
-    **Source:** Collected research dataset (`ResearchInformation3.csv`)  
-    **Type:** Structured CSV — includes academic, behavioral, and demographic data.  
+    **Source:** Collected dataset (inspired by Mendeley Data)  
+    **Type:** Structured CSV containing academic, behavioral, and demographic attributes  
     """)
 
     st.markdown("""
     ### 🧩 Relevance
-    This dataset enables exploration of **academic trends**, **socioeconomic influences**,  
-    and **skills impact**, making it ideal for a scientific visualization study.
+    This dataset explores **academic performance**, **socioeconomic status**, and **skills**.
+    It supports visualization-based analysis of student success factors.
     """)
 
     st.dataframe(df.head(), use_container_width=True)
     st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
-elif page == "Academic Performance Trends":
-    st.header("Objective 1: Academic Performance Trends")
+# --------------------------------------------
+# 🎯 Objective 1: Academic Performance Trends
+# --------------------------------------------
+elif page == "🎯 Academic Performance Trends":
+    st.header("🎯 Objective 1: Academic Performance Trends")
     st.subheader("Objective Statement")
     st.write("Analyze GPA variation by department, gender, and attendance level.")
 
@@ -100,16 +69,39 @@ elif page == "Academic Performance Trends":
     Department-wise performance varies slightly, and gender impact is minimal.
     """)
 
-    plot_chart("box", df, x='Department', y='Overall', title="GPA Distribution by Department")
-    plot_chart("violin", df, x='Gender', y='Overall', title="GPA by Gender")
-    plot_chart("bar", df, x='Attendance', y='Overall', title="Average GPA by Attendance")
+    # 1️⃣ Boxplot – Overall GPA by Department
+    fig1 = px.box(
+        df, x='Department', y='Overall', color='Department',
+        title="Overall GPA Distribution by Department", points='all'
+    )
+    st.plotly_chart(fig1, use_container_width=True)
+
+    # 2️⃣ Violin Plot – GPA by Gender
+    fig2 = px.violin(
+        df, x='Gender', y='Overall', color='Gender',
+        box=True, points='all', title="Overall GPA by Gender"
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # 3️⃣ Bar Chart – Average GPA by Attendance
+    avg_att = df.groupby('Attendance', as_index=False)['Overall'].mean()
+    fig3 = px.bar(
+        avg_att, x='Attendance', y='Overall', color='Attendance',
+        text='Overall', title="Average GPA by Attendance Level"
+    )
+    fig3.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig3.update_layout(yaxis_title="Average GPA", showlegend=False)
+    st.plotly_chart(fig3, use_container_width=True)
 
     st.markdown("""
     **Interpretation:** Departments show varied GPA levels, with attendance being the strongest performance indicator.
     """)
 
-elif page == "Socioeconomic & Lifestyle Factors":
-    st.header("Objective 2: Socioeconomic & Lifestyle Factors")
+# --------------------------------------------
+# 💰 Objective 2: Socioeconomic & Lifestyle Factors
+# --------------------------------------------
+elif page == "💰 Socioeconomic & Lifestyle Factors":
+    st.header("💰 Objective 2: Socioeconomic & Lifestyle Factors")
     st.subheader("Objective Statement")
     st.write("Investigate how income and gaming habits influence academic performance.")
 
@@ -119,18 +111,41 @@ elif page == "Socioeconomic & Lifestyle Factors":
     Extended gaming hours tend to lower performance levels.
     """)
 
-    plot_chart("bar", df, x='Income', y='Overall', title="Average GPA by Income Level")
-    plot_chart("scatter", df, x='Gaming', y='Overall', title="Gaming Duration vs GPA")
-    corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr()
-    plot_chart("heatmap", corr, title="Correlation Heatmap")
+    # 4️⃣ Bar Chart – Average GPA by Income Level
+    avg_income = df.groupby('Income', as_index=False)['Overall'].mean()
+    fig4 = px.bar(
+        avg_income, x='Income', y='Overall', color='Income', text='Overall',
+        title="Average GPA by Income Level"
+    )
+    fig4.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig4.update_layout(yaxis_title="Average GPA", showlegend=False)
+    st.plotly_chart(fig4, use_container_width=True)
+
+    # 5️⃣ Scatter Plot – Gaming Duration vs GPA
+    fig5 = px.scatter(
+        df, x='Gaming', y='Overall', color='Gender', size='Overall',
+        title="Gaming Duration vs GPA", hover_data=['Department']
+    )
+    st.plotly_chart(fig5, use_container_width=True)
+
+    # 6️⃣ Heatmap – Correlation Matrix
+    corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr().round(2)
+    fig6 = px.imshow(
+        corr, text_auto=True, color_continuous_scale='RdBu_r',
+        title="Correlation Heatmap of Academic Variables"
+    )
+    st.plotly_chart(fig6, use_container_width=True)
 
     st.markdown("""
     **Interpretation:**  
     Income and time management significantly influence GPA outcomes.
     """)
 
-elif page == "Skills & Extracurricular Impact":
-    st.header("Objective 3: Skills & Extracurricular Impact")
+# --------------------------------------------
+# 🧠 Objective 3: Skills & Extracurricular Impact
+# --------------------------------------------
+elif page == "🧠 Skills & Extracurricular Impact":
+    st.header("🧠 Objective 3: Skills & Extracurricular Impact")
     st.subheader("Objective Statement")
     st.write("Assess how English proficiency, computer skills, and extracurricular activities influence GPA.")
 
@@ -140,16 +155,41 @@ elif page == "Skills & Extracurricular Impact":
     Students active in extracurriculars maintain balanced academic performance.
     """)
 
-    # ✅ Visualization #7 changed from scatter to grouped bar
-    plot_chart("grouped_bar", df, x='Computer', y='Overall', hue='Extra', title="Average GPA by Computer Skill and Extracurriculars")
-    plot_chart("line", df, x='English', y='Overall', title="Average GPA by English Proficiency")
-    plot_chart("bar", df, x='Extra', y='Overall', title="Average GPA by Extracurricular Involvement")
+    # 7️⃣ Grouped Bar Chart – GPA by Computer Skill & Extracurriculars
+    avg_skill_extra = df.groupby(['Computer', 'Extra'], as_index=False)['Overall'].mean()
+    fig7 = px.bar(
+        avg_skill_extra, x='Computer', y='Overall', color='Extra',
+        barmode='group', text='Overall',
+        title="Average GPA by Computer Skill and Extracurricular Participation"
+    )
+    fig7.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig7.update_layout(yaxis_title="Average GPA")
+    st.plotly_chart(fig7, use_container_width=True)
+
+    # 8️⃣ Line Chart – GPA by English Proficiency
+    avg_english = df.groupby('English', as_index=False)['Overall'].mean()
+    fig8 = px.line(
+        avg_english, x='English', y='Overall', markers=True,
+        title="Average GPA by English Proficiency"
+    )
+    st.plotly_chart(fig8, use_container_width=True)
+
+    # 9️⃣ Bar Chart – GPA by Extracurricular Involvement
+    avg_extra = df.groupby('Extra', as_index=False)['Overall'].mean()
+    fig9 = px.bar(
+        avg_extra, x='Extra', y='Overall', color='Extra', text='Overall',
+        title="Average GPA by Extracurricular Involvement"
+    )
+    fig9.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig9.update_layout(yaxis_title="Average GPA", showlegend=False)
+    st.plotly_chart(fig9, use_container_width=True)
 
     st.markdown("""
     **Interpretation:**  
-    Students with higher computer skills generally show better GPA outcomes.  
-    The grouped bar chart makes it easier to compare academic impact between extracurricular participants and non-participants.
+    Higher technical and language proficiency enhance academic success,
+    while extracurricular involvement fosters balanced student development.
     """)
 
+# --------------------------------------------
 st.markdown("---")
 st.caption("Developed for Scientific Visualization Assignment © 2025")
