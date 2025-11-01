@@ -7,7 +7,7 @@ import plotly.express as px
 # --------------------------------------------
 st.set_page_config(page_title="Student Academic Visualization Dashboard", layout="wide")
 
-st.title("Student Academic Visualization Dashboard")
+st.title("📊 Student Academic Visualization Dashboard")
 
 st.markdown("""
 Explore the student dataset through **interactive scientific visualizations**.
@@ -26,19 +26,19 @@ df = load_data()
 # --------------------------------------------
 # Sidebar Navigation
 # --------------------------------------------
-st.sidebar.header("Menu")
+st.sidebar.header("📄 Visualization Pages")
 page = st.sidebar.radio("Select Analysis Section", [
-    "Dataset Selection & Relevance",
-    "Academic Performance Trends",
-    "Socioeconomic & Lifestyle Factors",
-    "Skills & Extracurricular Impact"
+    "📘 Dataset Selection & Relevance",
+    "🎯 Academic Performance Trends",
+    "💰 Socioeconomic & Lifestyle Factors",
+    "🧠 Skills & Extracurricular Impact"
 ])
 
 # --------------------------------------------
-# Dataset Selection & Relevance
+# 📘 Dataset Selection & Relevance
 # --------------------------------------------
-if page == "Dataset Selection & Relevance":
-    st.header("Dataset Selection & Relevance")
+if page == "📘 Dataset Selection & Relevance":
+    st.header("📘 Dataset Selection & Relevance")
 
     st.markdown("""
     **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
@@ -47,7 +47,7 @@ if page == "Dataset Selection & Relevance":
     """)
 
     st.markdown("""
-    ### Relevance
+    ### 🧩 Relevance
     This dataset explores **academic performance**, **socioeconomic status**, and **skills**.
     It supports visualization-based analysis of student success factors.
     """)
@@ -56,10 +56,10 @@ if page == "Dataset Selection & Relevance":
     st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
 # --------------------------------------------
-# Objective 1: Academic Performance Trends
+# 🎯 Objective 1: Academic Performance Trends
 # --------------------------------------------
-elif page == "Academic Performance Trends":
-    st.header("Objective 1: Academic Performance Trends")
+elif page == "🎯 Academic Performance Trends":
+    st.header("🎯 Objective 1: Academic Performance Trends")
     st.subheader("Objective Statement")
     st.write("Analyze GPA variation by department, gender, and attendance level.")
 
@@ -69,62 +69,36 @@ elif page == "Academic Performance Trends":
     Department-wise performance varies slightly, and gender impact is minimal.
     """)
 
-    # --- 1️⃣ Boxplot – Overall GPA by Department ---
+    # 1️⃣ Boxplot – Overall GPA by Department
     fig1 = px.box(
-        df,
-        x='Department',
-        y='Overall',
-        color='Department',
-        title="Overall GPA Distribution by Department"
-    )
-    fig1.update_layout(
-        xaxis_title="Department",
-        yaxis_title="Overall GPA",
-        showlegend=False
+        df, x='Department', y='Overall', color='Department',
+        title="Overall GPA Distribution by Department", points='all'
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # --- 2️⃣ Histogram – GPA Distribution by Gender ---
-    fig2 = px.histogram(
-        df,
-        x='Overall',
-        color='Gender',
-        barmode='overlay',
-        opacity=0.7,
-        nbins=20,
-        title="GPA Frequency Distribution by Gender"
-    )
-    fig2.update_layout(
-        xaxis_title="Overall GPA",
-        yaxis_title="Number of Students",
-        bargap=0.1
+    # 2️⃣ Violin Plot – GPA by Gender
+    fig2 = px.violin(
+        df, x='Gender', y='Overall', color='Gender',
+        box=True, points='all', title="Overall GPA by Gender"
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # --- 3️⃣ Bar Chart – Average GPA by Attendance ---
+    # 3️⃣ Bar Chart – Average GPA by Attendance
+    avg_att = df.groupby('Attendance', as_index=False)['Overall'].mean()
     fig3 = px.bar(
-        df.groupby('Attendance')['Overall'].mean().reset_index(),
-        x='Attendance',
-        y='Overall',
-        title="Average GPA by Attendance Level",
-        text_auto=True
+        avg_att, x='Attendance', y='Overall', color='Attendance',
+        text='Overall', title="Average GPA by Attendance Level"
     )
-    fig3.update_layout(
-        xaxis_title="Attendance Level",
-        yaxis_title="Average GPA"
-    )
+    fig3.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig3.update_layout(yaxis_title="Average GPA", showlegend=False)
     st.plotly_chart(fig3, use_container_width=True)
 
     st.markdown("""
-    **Interpretation:**  
-    - Departments show varied GPA levels, indicating different grading or performance patterns.  
-    - The histogram shows a balanced GPA distribution between genders, with only minor variation.  
-    - Attendance remains the strongest and most consistent factor influencing GPA outcomes.
+    **Interpretation:** Departments show varied GPA levels, with attendance being the strongest performance indicator.
     """)
 
-
 # --------------------------------------------
-# Objective 2: Socioeconomic & Lifestyle Factors
+# 💰 Objective 2: Socioeconomic & Lifestyle Factors
 # --------------------------------------------
 elif page == "💰 Socioeconomic & Lifestyle Factors":
     st.header("💰 Objective 2: Socioeconomic & Lifestyle Factors")
@@ -168,10 +142,10 @@ elif page == "💰 Socioeconomic & Lifestyle Factors":
     """)
 
 # --------------------------------------------
-# Objective 3: Skills & Extracurricular Impact
+# 🧠 Objective 3: Skills & Extracurricular Impact
 # --------------------------------------------
-elif page == "Skills & Extracurricular Impact":
-    st.header("Objective 3: Skills & Extracurricular Impact")
+elif page == "🧠 Skills & Extracurricular Impact":
+    st.header("🧠 Objective 3: Skills & Extracurricular Impact")
     st.subheader("Objective Statement")
     st.write("Assess how English proficiency, computer skills, and extracurricular activities influence GPA.")
 
