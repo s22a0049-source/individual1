@@ -10,7 +10,7 @@ except ImportError:
     seaborn_available = False
     st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
 
-st.title("📊 Student Academic Visualization Dashboard")
+st.title("Student Academic Visualization Dashboard")
 
 st.markdown("""
 Explore the student dataset through **scientific visualization techniques**.
@@ -27,10 +27,10 @@ df = load_data()
 # Sidebar navigation within visualization page
 st.sidebar.header("📄 Visualization Pages")
 page = st.sidebar.radio("Select Analysis Section", [
-    "📘 Dataset Selection & Relevance",
-    "🎯 Academic Performance Trends",
-    "💰 Socioeconomic & Lifestyle Factors",
-    "🧠 Skills & Extracurricular Impact"
+    "Dataset Selection & Relevance",
+    "Academic Performance Trends",
+    "Socioeconomic & Lifestyle Factors",
+    "Skills & Extracurricular Impact"
 ])
 
 # Helper function for plotting
@@ -71,8 +71,8 @@ def plot_chart(kind, data, x=None, y=None, hue=None, title=None):
 
 # --------------------- Visualization Pages ---------------------
 
-if page == "📘 Dataset Selection & Relevance":
-    st.header("📘 Dataset Selection & Relevance")
+if page == "Dataset Selection & Relevance":
+    st.header("Dataset Selection & Relevance")
 
     st.markdown("""
     **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
@@ -89,8 +89,8 @@ if page == "📘 Dataset Selection & Relevance":
     st.dataframe(df.head(), use_container_width=True)
     st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
-elif page == "🎯 Academic Performance Trends":
-    st.header("🎯 Objective 1: Academic Performance Trends")
+elif page == "Academic Performance Trends":
+    st.header("Objective 1: Academic Performance Trends")
     st.subheader("Objective Statement")
     st.write("Analyze GPA variation by department, gender, and attendance level.")
 
@@ -108,8 +108,8 @@ elif page == "🎯 Academic Performance Trends":
     **Interpretation:** Departments show varied GPA levels, with attendance being the strongest performance indicator.
     """)
 
-elif page == "💰 Socioeconomic & Lifestyle Factors":
-    st.header("💰 Objective 2: Socioeconomic & Lifestyle Factors")
+elif page == "Socioeconomic & Lifestyle Factors":
+    st.header("Objective 2: Socioeconomic & Lifestyle Factors")
     st.subheader("Objective Statement")
     st.write("Investigate how income and gaming habits influence academic performance.")
 
@@ -129,8 +129,8 @@ elif page == "💰 Socioeconomic & Lifestyle Factors":
     Income and time management significantly influence GPA outcomes.
     """)
 
-elif page == "🧠 Skills & Extracurricular Impact":
-    st.header("🧠 Objective 3: Skills & Extracurricular Impact")
+elif page == "Skills & Extracurricular Impact":
+    st.header("Objective 3: Skills & Extracurricular Impact")
     st.subheader("Objective Statement")
     st.write("Assess how English proficiency, computer skills, and extracurricular activities influence GPA.")
 
