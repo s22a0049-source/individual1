@@ -134,55 +134,37 @@ elif page == "💰 Socioeconomic & Lifestyle Factors":
     st.success("""
     **Summary Box:**  
     Higher income correlates with better GPA due to access to resources.  
-    Moderate gaming hours show balance, while excessive gaming tends to lower performance.
+    Extended gaming hours tend to lower performance levels.
     """)
 
-    # --- 4️⃣ Bar Chart – Average GPA by Income Level ---
+    # 4️⃣ Bar Chart – Average GPA by Income Level
+    avg_income = df.groupby('Income', as_index=False)['Overall'].mean()
     fig4 = px.bar(
-        df.groupby('Income')['Overall'].mean().reset_index(),
-        x='Income',
-        y='Overall',
-        text_auto=True,
+        avg_income, x='Income', y='Overall', color='Income', text='Overall',
         title="Average GPA by Income Level"
     )
-    fig4.update_layout(
-        xaxis_title="Income Level",
-        yaxis_title="Average GPA"
-    )
+    fig4.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig4.update_layout(yaxis_title="Average GPA", showlegend=False)
     st.plotly_chart(fig4, use_container_width=True)
 
-    # --- 5️⃣ Line Chart – Gaming Hours vs Average GPA ---
-    fig5 = px.line(
-        df.groupby('Gaming')['Overall'].mean().reset_index(),
-        x='Gaming',
-        y='Overall',
-        markers=True,
-        title="Gaming Hours vs Average GPA"
-    )
-    fig5.update_traces(line=dict(width=3))
-    fig5.update_layout(
-        xaxis_title="Gaming Hours (per day)",
-        yaxis_title="Average GPA",
-        hovermode="x unified"
+    # 5️⃣ Scatter Plot – Gaming Duration vs GPA
+    fig5 = px.scatter(
+        df, x='Gaming', y='Overall', color='Gender', size='Overall',
+        title="Gaming Duration vs GPA", hover_data=['Department']
     )
     st.plotly_chart(fig5, use_container_width=True)
 
-    # --- 6️⃣ Correlation Heatmap ---
-    corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr()
+    # 6️⃣ Heatmap – Correlation Matrix
+    corr = df[['HSC', 'SSC', 'Computer', 'English', 'Last', 'Overall']].corr().round(2)
     fig6 = px.imshow(
-        corr,
-        text_auto=True,
-        color_continuous_scale='RdBu_r',
-        title="Correlation Heatmap of Academic Metrics"
+        corr, text_auto=True, color_continuous_scale='RdBu_r',
+        title="Correlation Heatmap of Academic Variables"
     )
     st.plotly_chart(fig6, use_container_width=True)
 
     st.markdown("""
     **Interpretation:**  
-    - Students from higher-income backgrounds tend to have slightly better GPA outcomes.  
-    - The line chart clearly shows that moderate gaming (1–2 hours/day) does not harm performance,  
-      but excessive gaming (3+ hours/day) lowers GPA.  
-    - The heatmap confirms strong positive relationships between academic exam results and GPA.
+    Income and time management significantly influence GPA outcomes.
     """)
 
 # --------------------------------------------
