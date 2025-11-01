@@ -179,13 +179,20 @@ elif page == "Skills & Extracurricular Impact":
     # 7️⃣ Density Contour Plot – Computer Skill vs GPA
     import plotly.express as px
 
+    # Clean data to ensure numeric columns only
+    df_density = df[['Computer', 'Overall']].dropna()
+    df_density = df_density[df_density['Computer'].apply(lambda x: str(x).replace('.', '', 1).isdigit())]
+    df_density = df_density.astype({'Computer': float, 'Overall': float})
+
+    # Create density contour plot
     fig7 = px.density_contour(
-        df,
+        df_density,
         x='Computer',
         y='Overall',
-        color_continuous_scale='Viridis',
         title="Density Contour of Computer Skill vs GPA"
     )
+
+    # Fill the contour for better readability
     fig7.update_traces(contours_coloring="fill", contours_showlines=False)
     fig7.update_layout(
         xaxis_title="Computer Skill Level",
@@ -193,6 +200,7 @@ elif page == "Skills & Extracurricular Impact":
         plot_bgcolor="white",
         font=dict(size=14)
     )
+
     st.plotly_chart(fig7, use_container_width=True)
 
     # 8️⃣ Line Chart – GPA by English Proficiency
