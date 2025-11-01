@@ -10,7 +10,7 @@ except ImportError:
     seaborn_available = False
     st.warning("⚠️ Seaborn not found — using Matplotlib fallback mode.")
 
-st.title("📊 Student Academic Visualization Dashboard")
+st.title("Student Academic Visualization Dashboard")
 
 st.markdown("""
 Explore the student dataset through **scientific visualization techniques**.
