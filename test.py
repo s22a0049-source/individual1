@@ -196,20 +196,16 @@ elif page == "Skills & Extracurricular Impact":
     st.plotly_chart(fig8, use_container_width=True)
 
     # 9️⃣ Bar Chart – GPA by Extracurricular Involvement
-    avg_extra = df.groupby('Extra', as_index=False)['Overall'].mean()
-    fig9 = px.bar(
-        avg_extra, x='Extra', y='Overall', color='Extra', text='Overall',
-        title="Average GPA by Extracurricular Involvement"
+    extra_mean = df.groupby('Extra')['Overall'].mean().reset_index()
+    fig9 = px.pie(
+        extra_mean,
+        names='Extra',
+        values='Overall',
+        title="Average GPA Distribution by Extracurricular Involvement",
+        hole=0.4  # makes it a donut chart
     )
-    fig9.update_traces(texttemplate='%{text:.2f}', textposition='outside')
-    fig9.update_layout(yaxis_title="Average GPA", showlegend=False)
+    fig9.update_traces(textinfo='percent+label')
     st.plotly_chart(fig9, use_container_width=True)
-
-    st.markdown("""
-    **Interpretation:**  
-    Higher technical and language proficiency enhance academic success,
-    while extracurricular involvement fosters balanced student development.
-    """)
 
 # --------------------------------------------
 st.markdown("---")
