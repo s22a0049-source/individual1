@@ -176,15 +176,23 @@ elif page == "Skills & Extracurricular Impact":
     Students active in extracurriculars maintain balanced academic performance.
     """)
 
-    # 7️⃣ Grouped Bar Chart – GPA by Computer Skill & Extracurriculars
-    avg_skill_extra = df.groupby(['Computer', 'Extra'], as_index=False)['Overall'].mean()
-    fig7 = px.bar(
-        avg_skill_extra, x='Computer', y='Overall', color='Extra',
-        barmode='group', text='Overall',
-        title="Average GPA by Computer Skill and Extracurricular Participation"
+    # 7️⃣ Density Contour Plot – Computer Skill vs GPA
+    import plotly.express as px
+
+    fig7 = px.density_contour(
+        df,
+        x='Computer',
+        y='Overall',
+        color_continuous_scale='Viridis',
+        title="Density Contour of Computer Skill vs GPA"
     )
-    fig7.update_traces(texttemplate='%{text:.2f}', textposition='outside')
-    fig7.update_layout(yaxis_title="Average GPA")
+    fig7.update_traces(contours_coloring="fill", contours_showlines=False)
+    fig7.update_layout(
+        xaxis_title="Computer Skill Level",
+        yaxis_title="GPA",
+        plot_bgcolor="white",
+        font=dict(size=14)
+    )
     st.plotly_chart(fig7, use_container_width=True)
 
     # 8️⃣ Line Chart – GPA by English Proficiency
