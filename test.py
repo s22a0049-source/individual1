@@ -206,10 +206,15 @@ elif page == "Skills & Extracurricular Impact":
     st.plotly_chart(fig9, use_container_width=True)
 
 # --------------------------------------------
-st.markdown("---")
     **Interpretation:**  
-    The density plot reveals that students with **moderate to high computer skills** generally achieve **higher GPAs**.  
-    The line chart shows that **higher English proficiency** is associated with **better average GPA**.
-    The strip plot indicates that students involved in **extracurricular activities** tend to maintain **stable GPA levels**     
+    - The density plot shows that students with **moderate to high computer skills** generally achieve **higher GPAs**,  
+      highlighting the importance of digital literacy in academic success.  
+    - The line chart reveals that **English proficiency** has a positive relationship with GPA,  
+      emphasizing the value of strong language skills in understanding course materials.  
+    - The strip plot indicates that participation in **extracurricular activities** does not reduce GPA performance,  
+      suggesting that students can balance academic and non-academic responsibilities effectively.
     """)
+
+# --------------------------------------------
+st.markdown("---")
 st.caption("Developed for Scientific Visualization Assignment © 2025")
