@@ -86,7 +86,7 @@ if page == "Academic Performance Trends":
     st.markdown("""
     **Interpretation:**  
     - The boxplot shows that some departments maintain more consistent GPA ranges.  
-    - The histogram indicates GPA distribution is similar across genders.  
+    - The violin plot indicate that both male and female students achieve comparable academic performance, with minimal differences in GPA distribution  
     - The **pie chart** highlights that students with **high attendance** contribute the most to strong GPA performance,  
       reaffirming attendance as a key factor in academic success.
     """)
