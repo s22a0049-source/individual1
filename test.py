@@ -22,8 +22,7 @@ df = load_data()
 # Sidebar Navigation
 # --------------------------------------------
 st.sidebar.header("Menu")
-page = st.sidebar.radio("Select Analysis Section", [
-    "Academic Performance Trends",
+    "Academic Performance Trends", [
     "Socioeconomic & Lifestyle Factors",
     "Skills & Extracurricular Impact"
 ])
