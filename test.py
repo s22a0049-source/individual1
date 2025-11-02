@@ -9,11 +9,6 @@ st.set_page_config(page_title="Student Academic Visualization Dashboard", layout
 
 st.title("Student Academic Visualization Dashboard")
 
-st.markdown("""
-Explore the student dataset through **interactive scientific visualizations**.
-Each section focuses on one objective to uncover meaningful academic insights.
-""")
-
 # --------------------------------------------
 # Load Dataset
 # --------------------------------------------
