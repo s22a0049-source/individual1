@@ -152,30 +152,18 @@ elif page == "Skills & Extracurricular Impact":
     """)
 
     # 7️⃣ Density Plot – Computer Skill vs GPA
-    import plotly.express as px
-
-    # Clean data to ensure numeric columns only
     df_density = df[['Computer', 'Overall']].dropna()
     df_density = df_density[df_density['Computer'].apply(lambda x: str(x).replace('.', '', 1).isdigit())]
     df_density = df_density.astype({'Computer': float, 'Overall': float})
 
-    # Create density contour plot
     fig7 = px.density_contour(
         df_density,
         x='Computer',
         y='Overall',
         title="Density Plot of Computer Skill vs GPA"
     )
-
-    # Fill the contour for better readability
     fig7.update_traces(contours_coloring="fill", contours_showlines=False)
-    fig7.update_layout(
-        xaxis_title="Computer Skill Level",
-        yaxis_title="GPA",
-        plot_bgcolor="white",
-        font=dict(size=14)
-    )
-
+    fig7.update_layout(xaxis_title="Computer Skill Level", yaxis_title="GPA", plot_bgcolor="white", font=dict(size=14))
     st.plotly_chart(fig7, use_container_width=True)
 
     # 8️⃣ Line Chart – GPA by English Proficiency
@@ -186,26 +174,20 @@ elif page == "Skills & Extracurricular Impact":
     )
     st.plotly_chart(fig8, use_container_width=True)
 
-    # 9️⃣Strip Plot – GPA by Extracurricular Involvement
-    import plotly.express as px
-
+    # 9️⃣ Strip Plot – GPA by Extracurricular Involvement
     fig9 = px.strip(
         df,
         x='Extra',
         y='Overall',
         title="GPA by Extracurricular Involvement",
-        stripmode='overlay',
+        stripmode='overlay'
     )
     fig9.update_traces(jitter=0.35, opacity=0.7)
-    fig9.update_layout(
-        xaxis_title="Extracurricular Involvement",
-        yaxis_title="GPA",
-        plot_bgcolor="white",
-        font=dict(size=14)
-    )
+    fig9.update_layout(xaxis_title="Extracurricular Involvement", yaxis_title="GPA", plot_bgcolor="white", font=dict(size=14))
     st.plotly_chart(fig9, use_container_width=True)
 
-# --------------------------------------------
+    # ✅ Interpretation for Graphs 7, 8, and 9
+    st.markdown("""
     **Interpretation:**  
     - The density plot shows that students with **moderate to high computer skills** generally achieve **higher GPAs**,  
       highlighting the importance of digital literacy in academic success.  
