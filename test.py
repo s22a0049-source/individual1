@@ -132,7 +132,9 @@ elif page == "Socioeconomic & Lifestyle Factors":
 
     st.markdown("""
     **Interpretation:**  
-    Income and time management significantly influence GPA outcomes.
+    The bar chart shows that students from a higher income category tend to have a better average GPA compared to a lower-income group.
+    The scatter plot shows that excessive gaming time might reduce study time and affect focus, leading to weaker academic results.
+    The heatmap shows students who perform well in earlier studies, possess strong technical, and have language skills tend to maintain good academic achievement overall.
     """)
 
 # --------------------------------------------
@@ -205,4 +207,9 @@ elif page == "Skills & Extracurricular Impact":
 
 # --------------------------------------------
 st.markdown("---")
+    **Interpretation:**  
+    The density plot reveals that students with **moderate to high computer skills** generally achieve **higher GPAs**.  
+    The line chart shows that **higher English proficiency** is associated with **better average GPA**.
+    The strip plot indicates that students involved in **extracurricular activities** tend to maintain **stable GPA levels**     
+    """)
 st.caption("Developed for Scientific Visualization Assignment © 2025")
