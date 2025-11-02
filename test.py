@@ -22,7 +22,7 @@ df = load_data()
 # Sidebar Navigation
 # --------------------------------------------
 st.sidebar.header("Menu")
-    "Academic Performance Trends", [
+    "Academic Performance Trends", 
     "Socioeconomic & Lifestyle Factors",
     "Skills & Extracurricular Impact"
 ])
