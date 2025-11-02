@@ -28,32 +28,10 @@ df = load_data()
 # --------------------------------------------
 st.sidebar.header("Menu")
 page = st.sidebar.radio("Select Analysis Section", [
-    "Dataset Selection & Relevance",
     "Academic Performance Trends",
     "Socioeconomic & Lifestyle Factors",
     "Skills & Extracurricular Impact"
 ])
-
-# --------------------------------------------
-# Dataset Selection & Relevance
-# --------------------------------------------
-if page == "Dataset Selection & Relevance":
-    st.header("Dataset Selection & Relevance")
-
-    st.markdown("""
-    **Dataset Title:** Research Information on Student Academic and Behavioral Factors  
-    **Source:** Collected dataset (inspired by Mendeley Data)  
-    **Type:** Structured CSV containing academic, behavioral, and demographic attributes  
-    """)
-
-    st.markdown("""
-    ### Relevance
-    This dataset explores **academic performance**, **socioeconomic status**, and **skills**.
-    It supports visualization-based analysis of student success factors.
-    """)
-
-    st.dataframe(df.head(), use_container_width=True)
-    st.info(f"Total Records: {df.shape[0]} | Columns: {df.shape[1]} | Missing Values: {df.isnull().sum().sum()}")
 
 # --------------------------------------------
 # Objective 1: Academic Performance Trends
