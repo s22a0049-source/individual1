@@ -36,7 +36,7 @@ page = st.sidebar.radio("Select Analysis Section", [
 # --------------------------------------------
 # Objective 1: Academic Performance Trends
 # --------------------------------------------
-elif page == "Academic Performance Trends":
+if page == "Academic Performance Trends":
     st.header("Objective 1: Academic Performance Trends")
     st.subheader("Objective Statement")
     st.write("Analyze GPA variation by department, gender, and attendance level.")
