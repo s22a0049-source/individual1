@@ -22,10 +22,14 @@ df = load_data()
 # Sidebar Navigation
 # --------------------------------------------
 st.sidebar.header("Menu")
-    "Academic Performance Trends", 
-    "Socioeconomic & Lifestyle Factors",
-    "Skills & Extracurricular Impact"
-])
+page = st.sidebar.radio(
+    "",
+    [
+        "Academic Performance Trends",
+        "Socioeconomic & Lifestyle Factors",
+        "Skills & Extracurricular Impact"
+    ]
+)
 
 # --------------------------------------------
 # Objective 1: Academic Performance Trends
